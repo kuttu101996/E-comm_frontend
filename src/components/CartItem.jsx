@@ -1,11 +1,68 @@
 import React from "react";
-import { Box, Image, Text, Button, Flex, Spacer } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Text,
+  Button,
+  Flex,
+  Spacer,
+  useToast,
+} from "@chakra-ui/react";
 import { AppState } from "../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
 
 const CartItem = ({ item }) => {
   const { setSingleData, setRender } = AppState();
   const navigate = useNavigate();
+  const toast = useToast();
+
+  const handleAddQuantity = async (name) => {
+    let dataName = { name: name };
+    await fetch(`https://e-comm-mf6t.onrender.com/cartCheckAdd`, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(dataName),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.msg === "Quantity Added") {
+          // setCartNumber(cartNumber + 1);
+          setRender(true);
+          toast({
+            title: "Quantity Added",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleReduceQuantity = async (name) => {
+    let dataName = { name: name };
+    await fetch(`https://e-comm-mf6t.onrender.com/cartCheckReduce`, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(dataName),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.msg === "Quantity Reduced") {
+          // setCartNumber(cartNumber + 1);
+          setRender(true);
+          toast({
+            title: "Quantity Reduced",
+            status: "info",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleRemove = async (productId) => {
     await fetch(`https://e-comm-mf6t.onrender.com/cart/${productId}`, {
@@ -13,7 +70,16 @@ const CartItem = ({ item }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.message === "Product deleted successfully") setRender(true);
+        if (data.message === "Product deleted successfully") {
+          setRender(true);
+          toast({
+            title: "Product deleted successfully",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -67,19 +133,61 @@ const CartItem = ({ item }) => {
           </Text>
         </Box>
         <Spacer />
-        {/* <Box>
-          <Button colorScheme="blue" size="sm">
-            Quantity - {}
-          </Button>
-        </Box> */}
         <Box>
-          <Button
-            colorScheme="red"
-            size="sm"
-            onClick={() => handleRemove(item._id)}
+          <Box
+            display={"flex"}
+            width={"100%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            mb={2}
           >
-            Remove
-          </Button>
+            <Text mr={3}>Quantity - {item.quantity}</Text>
+            <Button
+              colorScheme="red"
+              size="sm"
+              onClick={() => handleRemove(item._id)}
+            >
+              Remove Item
+            </Button>
+          </Box>
+          <Box
+            display={"flex"}
+            width={"100%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Button
+              mr={2}
+              onClick={() => {
+                {
+                  item.cartProduct && handleAddQuantity(item.cartProduct.name);
+                }
+                {
+                  item.cartCombo && handleAddQuantity(item.cartCombo.comboName);
+                }
+              }}
+              colorScheme="green"
+              size="sm"
+            >
+              Add Quantity
+            </Button>
+            <Button
+              onClick={() => {
+                {
+                  item.cartProduct &&
+                    handleReduceQuantity(item.cartProduct.name);
+                }
+                {
+                  item.cartCombo &&
+                    handleReduceQuantity(item.cartCombo.comboName);
+                }
+              }}
+              colorScheme="purple"
+              size="sm"
+            >
+              Reduce Quantity
+            </Button>
+          </Box>
         </Box>
       </Flex>
     </Box>

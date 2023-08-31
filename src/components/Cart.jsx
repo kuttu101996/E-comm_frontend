@@ -5,11 +5,13 @@ import CartItem from "./CartItem";
 
 const Cart = () => {
   const [cartData, setCartData] = useState([]);
-  const [quantity, setQuantity] = useState({});
   const { setCartNumber, render, setRender } = AppState();
-  const totalPrice = cartData.reduce((total, item) => total + item.price, 0);
+  const totalPrice = cartData.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
   const totalDiscountedPrice = cartData.reduce(
-    (total, item) => total + item.discountedTotal,
+    (total, item) => total + item.discountedTotal * item.quantity,
     0
   );
 
@@ -24,15 +26,6 @@ const Cart = () => {
         if (Array.isArray(data)) {
           setCartNumber(data.length);
           setCartData(data);
-          setQuantity(
-            data.map((ele) => {
-              quantity[ele.cartCombo?._id] =
-                quantity[ele.cartCombo?._id] + 1 || 1;
-              quantity[ele.cartProduct?._id] =
-                quantity[ele.cartProduct?._id] + 1 || 1;
-              return quantity;
-            })
-          );
         }
       })
       .catch((err) => {
@@ -53,14 +46,6 @@ const Cart = () => {
             <Box key={item._id}>
               <CartItem
                 item={item}
-                // quantity={quantity.map((ele) => {
-                //   // ele.cartCombo?._id === ele
-                //   if (!ele[undefined]) {
-                //     return (
-                //       ele[item.cartCombo?._id] || ele[item.cartProduct?._id]
-                //     );
-                //   }
-                // })}
               />
             </Box>
           ))}

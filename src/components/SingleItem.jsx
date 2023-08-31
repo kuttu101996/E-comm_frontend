@@ -1,10 +1,11 @@
 import React from "react";
 import { AppState } from "../context/ContextProvider";
-import { Badge, Box, Button, Image, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Button, Image, Text, VStack, useToast } from "@chakra-ui/react";
 
 const SingleItem = () => {
   const { singleData } = AppState();
   const { cartNumber, setCartNumber, setRender } = AppState();
+  const toast = useToast()
   let totalAmount, discountedTotal, data;
 
   if (singleData.comboItemsInfo) {
@@ -28,22 +29,52 @@ const SingleItem = () => {
     };
   }
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (name) => {
+    let dataName = { name: name };
+    await fetch(`https://e-comm-mf6t.onrender.com/cartCheckAdd`, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(dataName),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.msg === "Quantity Added") {
+          setRender(true);
+          toast({
+            title: "Quanity Added",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          addToCart();
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+  async function addToCart() {
     await fetch(`https://e-comm-mf6t.onrender.com/cart`, {
       method: "POST",
       headers: { "Content-type": "application/json" },
       body: JSON.stringify(data),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then((data) => { 
         if (data._id) {
           setCartNumber(cartNumber + 1);
           setRender(true);
+          toast({
+            title: "Item Added to Cart",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
         }
       })
       .catch((err) => console.log(err));
-  };
+  }
 
   return (
     <div>
@@ -93,7 +124,10 @@ const SingleItem = () => {
             </Box>
           </Box>
           <VStack spacing={4} mt={4}>
-            <Button onClick={handleAddToCart} colorScheme="blue">
+            <Button
+              onClick={() => handleAddToCart(singleData.comboName)}
+              colorScheme="blue"
+            >
               Add to Cart
             </Button>
           </VStack>
@@ -133,7 +167,10 @@ const SingleItem = () => {
               </Text>
             )}
             <VStack spacing={4} mt={4}>
-              <Button onClick={handleAddToCart} colorScheme="blue">
+              <Button
+                onClick={() => handleAddToCart(singleData.name)}
+                colorScheme="blue"
+              >
                 Add to Cart
               </Button>
             </VStack>
