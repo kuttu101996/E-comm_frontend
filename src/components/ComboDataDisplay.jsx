@@ -28,6 +28,8 @@ const ComboDataDisplay = ({ comboData }) => {
       p={3}
       border="1px solid gray"
       borderRadius="lg"
+      boxShadow="2xl"
+      bg={'whiteAlpha.100'}
     >
       <VStack
         spacing={4}

@@ -8,7 +8,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [comboData, setComboData] = useState([]);
-  const { setCartNumber, render, setRender } = AppState();
+  const { setCartNumber, render, setRender, setCartData } = AppState();
 
   useEffect(() => {
     setLoading(true);
@@ -31,11 +31,13 @@ const Home = () => {
       .then((data) => {
         if (Array.isArray(data)) {
           setCartNumber(data.length);
+          setCartData(data);
         }
       });
+console.log("Home.jsx useEffect rendered");
 
     setLoading(false);
-    setRender(false)
+    setRender(false);
   }, [render]);
 
   return (

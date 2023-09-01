@@ -8,9 +8,9 @@ import { AppState } from "./context/ContextProvider";
 
 function App() {
   const navigate = useNavigate();
-  const { cartNumber } = AppState();
+  const { cartNumber, setRender } = AppState();
   return (
-    <>
+    <Box bg={"yellow.50"}>
       <Box
         display={"flex"}
         alignItems={"center"}
@@ -32,7 +32,10 @@ function App() {
             transition: ".2s ease-in-out",
             color: "white",
           }}
-          onClick={() => navigate("/cart")}
+          onClick={() => {
+            setRender(true);
+            navigate("/cart");
+          }}
         >
           Cart {cartNumber}
         </Badge>
@@ -42,7 +45,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/singleItem" element={<SingleItem />} />
       </Routes>
-    </>
+    </Box>
   );
 }
 

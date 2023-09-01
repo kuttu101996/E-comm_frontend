@@ -26,7 +26,6 @@ const CartItem = ({ item }) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.msg === "Quantity Added") {
-          // setCartNumber(cartNumber + 1);
           setRender(true);
           toast({
             title: "Quantity Added",
@@ -50,7 +49,6 @@ const CartItem = ({ item }) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.msg === "Quantity Reduced") {
-          // setCartNumber(cartNumber + 1);
           setRender(true);
           toast({
             title: "Quantity Reduced",
@@ -126,10 +124,10 @@ const CartItem = ({ item }) => {
             {item.cartCombo && "A Super Combo offer"}
           </Text>
           <Text fontSize="lg" mt={1}>
-            Price: ${item.price}
+            Price: {item.price}/-rs.
           </Text>
           <Text fontSize="lg" mt={1}>
-            Discounted Price: ${item.discountedTotal}
+            Discounted Price: {item.discountedTotal}/-rs.
           </Text>
         </Box>
         <Spacer />
@@ -159,12 +157,10 @@ const CartItem = ({ item }) => {
             <Button
               mr={2}
               onClick={() => {
-                {
-                  item.cartProduct && handleAddQuantity(item.cartProduct.name);
-                }
-                {
-                  item.cartCombo && handleAddQuantity(item.cartCombo.comboName);
-                }
+                (item.cartProduct &&
+                  handleAddQuantity(item.cartProduct.name)) ||
+                  (item.cartCombo &&
+                    handleAddQuantity(item.cartCombo.comboName));
               }}
               colorScheme="green"
               size="sm"
@@ -173,14 +169,10 @@ const CartItem = ({ item }) => {
             </Button>
             <Button
               onClick={() => {
-                {
-                  item.cartProduct &&
-                    handleReduceQuantity(item.cartProduct.name);
-                }
-                {
-                  item.cartCombo &&
-                    handleReduceQuantity(item.cartCombo.comboName);
-                }
+                (item.cartProduct &&
+                  handleReduceQuantity(item.cartProduct.name)) ||
+                  (item.cartCombo &&
+                    handleReduceQuantity(item.cartCombo.comboName));
               }}
               colorScheme="purple"
               size="sm"
