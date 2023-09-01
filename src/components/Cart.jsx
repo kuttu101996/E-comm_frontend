@@ -32,7 +32,6 @@ const Cart = () => {
       .catch((err) => {
         console.log(err);
       });
-console.log('Cart.jsx useEffect rendered');
     setRender(false);
   }, [render]);
 

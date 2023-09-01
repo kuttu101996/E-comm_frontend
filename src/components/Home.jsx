@@ -34,7 +34,6 @@ const Home = () => {
           setCartData(data);
         }
       });
-console.log("Home.jsx useEffect rendered");
 
     setLoading(false);
     setRender(false);
